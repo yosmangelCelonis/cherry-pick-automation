@@ -14,6 +14,7 @@ runs:
     - run: echo "Iniciando selección de PR mergeado"
       shell: bash
     - id: response
+      shell: bash
       run: |
         # Aquí puedes implementar la lógica para mostrar una interfaz de usuario donde el usuario pueda seleccionar un PR mergeado
         # Luego, envía el número del PR seleccionado como una respuesta
