@@ -10,14 +10,20 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    - name: GitHub List Pull Requests
-      uses: andrea-armstrong/github-list-pull-requests@v1.0.0
-
+    - name: list all closed pull requests in last 24 hours
+      id: list
+      uses: actions/github-list-pull-requests@v1.0
+      with:
+        token: ${{secrets.PERSONAL_TOKEN}}
+        state: 'closed'
+        window: '24'
+    - name: output
+      run: echo '${{ steps.list.outputs.pullRequestNumbers }}'
     - name: Ejecutar acción para seleccionar PR mergeado
       id: select_pr
       uses: ./.github/actions/select-merged-pr
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.PERSONAL_TOKEN }}
 
     - name: Procesar PR mergeado
       run: |
