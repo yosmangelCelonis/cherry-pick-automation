@@ -1,0 +1,21 @@
+name: Ejemplo de Workflow con PR Mergeado
+
+on:
+  workflow_dispatch:
+
+jobs:
+  proceso_pr_mergeado:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Ejecutar acción para seleccionar PR mergeado
+      id: select_pr
+      uses: ./.github/actions/select-merged-pr
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Procesar PR mergeado
+      run: |
+        SELECTED_PR_NUMBER=${{ steps.select_pr.outputs.selected_pr_number }}
+        echo "Procesando pull request mergeado número $SELECTED_PR_NUMBER"
+        # Aquí puedes utilizar el número del pull request seleccionado para realizar tareas adicionales
