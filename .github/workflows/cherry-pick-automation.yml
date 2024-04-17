@@ -3,37 +3,68 @@ name: Ejemplo de Workflow con PR Mergeado
 on:
   workflow_dispatch:
     inputs:
-      main_branch_pr:
+      branchPr:
         description: 'PR'
         type: string
         required: true
-      emergency_release_name:
-        description: 'Emergency release name'
-        type: string
-        required: false
-      weekly_release_name:
-        description: 'Weekly release name'
+      releaseType:
+        description: 'Release type'
+        required: true
+        default: 'Weekly release name'
+        type: choice
+        options:
+          - Weekly release
+          - Emergency
+      releaseName:
+        description: 'Release name'
         type: string
         required: true
-      root_cause_pr:
+      rootCausePr:
         description: 'Root Cause PR'
         type: string
         required: true
-      jira_ticket:
+      jiraTicket:
         description: 'Jira ticket'
         type: string
         required: true
-      reason_fix_critical:
+      reason4Fix:
         description: 'Reason fix is critical'
         type: string
         required: true
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
+        required: true
+      branch:
+        description: 'branch to run tests against'
+        type: branch
+        required: true
 jobs:
-  proceso_pr_mergeado:
+  check-out:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout
       uses: actions/checkout@v4
     - name: output
-      run: echo '${{ github.event.inputs.main_branch_pr }} ${{ github.event.inputs.emergency_release_name }} ${{ github.event.inputs.weekly_release_name }} ${{ github.event.inputs.root_cause_pr }} ${{ github.event.inputs.jira_ticket }} ${{ github.event.inputs.reason_fix_critical }}'
-
+      run: echo ' ${{ github.event.inputs.emergency_release_name }} ${{ github.event.inputs.weekly_release_name }} ${{ github.event.inputs.root_cause_pr }} ${{ github.event.inputs.jira_ticket }} ${{ github.event.inputs.reason_fix_critical }}'
+  log-the-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "PR: $PR"
+          echo "TYPE: $TYPE"
+          echo "RELEASE_NAME: $RELEASE_NAME"
+          echo "ROOT_CAUSE_PR: $ROOT_CAUSE_PR"
+          echo "JIRA_TICKET: $JIRA_TICKET"
+          echo "REASON_FIX: $REASON_FIX"
+          echo "BRANCH: $BRANCH"
+          echo "Environment: $ENVIRONMENT"
+        env:
+          PR: ${{ inputs.branchPr }}
+          TYPE: ${{ inputs.releaseType }}
+          RELEASE_NAME: ${{ inputs.releaseName }}
+          ROOT_CAUSE_PR: ${{ inputs.rootCausePr }}
+          JIRA_TICKET: ${{ inputs.jiraTicket }}
+          REASON_FIX: ${{ inputs.reason4Fix }}
+          BRANCH: ${{ inputs.branch }}
+          ENVIRONMENT: ${{ inputs.environment }}
