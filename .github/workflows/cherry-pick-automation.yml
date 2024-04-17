@@ -31,14 +31,6 @@ on:
         description: 'Reason fix is critical'
         type: string
         required: true
-      environment:
-        description: 'Environment to run tests against'
-        type: environment
-        required: true
-      branch:
-        description: 'branch to run tests against'
-        type: branch
-        required: true
 jobs:
   check-out:
     runs-on: ubuntu-latest
@@ -57,8 +49,6 @@ jobs:
           echo "ROOT_CAUSE_PR: $ROOT_CAUSE_PR"
           echo "JIRA_TICKET: $JIRA_TICKET"
           echo "REASON_FIX: $REASON_FIX"
-          echo "BRANCH: $BRANCH"
-          echo "Environment: $ENVIRONMENT"
         env:
           PR: ${{ inputs.branchPr }}
           TYPE: ${{ inputs.releaseType }}
@@ -66,5 +56,3 @@ jobs:
           ROOT_CAUSE_PR: ${{ inputs.rootCausePr }}
           JIRA_TICKET: ${{ inputs.jiraTicket }}
           REASON_FIX: ${{ inputs.reason4Fix }}
-          BRANCH: ${{ inputs.branch }}
-          ENVIRONMENT: ${{ inputs.environment }}
