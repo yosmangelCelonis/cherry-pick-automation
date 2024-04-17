@@ -2,7 +2,31 @@ name: Ejemplo de Workflow con PR Mergeado
 
 on:
   workflow_dispatch:
-
+    inputs:
+      main_branch_pr:
+        description: 'PR'
+        type: string
+        required: true
+      emergency_release_name:
+        description: 'Emergency release name'
+        type: string
+        required: false
+      weekly_release_name:
+        description: 'Weekly release name'
+        type: string
+        required: true
+      root_cause_pr:
+        description: 'Root Cause PR'
+        type: string
+        required: true
+      jira_ticket:
+        description: 'Jira ticket'
+        type: string
+        required: true
+      reason_fix_critical:
+        description: 'Reason fix is critical'
+        type: string
+        required: true
 jobs:
   proceso_pr_mergeado:
     runs-on: ubuntu-latest
@@ -10,23 +34,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    - name: list all closed pull requests in last 24 hours
-      id: list
-      uses: actions/github-list-pull-requests@v1.0
-      with:
-        token: ${{secrets.PERSONAL_TOKEN}}
-        state: 'closed'
-        window: '24'
     - name: output
-      run: echo '${{ steps.list.outputs.pullRequestNumbers }}'
-    - name: Ejecutar acción para seleccionar PR mergeado
-      id: select_pr
-      uses: ./.github/actions/select-merged-pr
-      with:
-        token: ${{ secrets.PERSONAL_TOKEN }}
+      run: echo '${{ github.event.inputs.main_branch_pr }} ${{ github.event.inputs.emergency_release_name }} ${{ github.event.inputs.weekly_release_name }} ${{ github.event.inputs.root_cause_pr }} ${{ github.event.inputs.jira_ticket }} ${{ github.event.inputs.reason_fix_critical }}'
 
-    - name: Procesar PR mergeado
-      run: |
-        SELECTED_PR_NUMBER=${{ steps.select_pr.outputs.selected_pr_number }}
-        echo "Procesando pull request mergeado número $SELECTED_PR_NUMBER"
-        # Aquí puedes utilizar el número del pull request seleccionado para realizar tareas adicionales
