@@ -57,11 +57,13 @@ jobs:
           JIRA_TICKET: ${{ inputs.jiraTicket }}
           REASON_FIX: ${{ inputs.reason4Fix }}
   check-pr-information:
-    - name: get the Pr information
-      run: |
-        echo "PR_JSON=$(gh pr view ${{ inputs.branchPr }} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels)" >> $GITHUB_OUTPUT
-      env:
-        PR_JSON: ${{ steps.version.outputs.PR_JSON }}
+    - runs-on: ubuntu-latest
+    - steps:
+      - name: get the Pr information
+        run: |
+          echo "PR_JSON=$(gh pr view ${{ inputs.branchPr }} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels)" >> $GITHUB_OUTPUT
+        env:
+          PR_JSON: ${{ steps.version.outputs.PR_JSON }}
   log-the-inputs2:
     runs-on: ubuntu-latest
     steps:
