@@ -32,16 +32,12 @@ on:
         type: string
         required: true
 jobs:
-  check-out:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: output
-      run: echo ' ${{ github.event.inputs.emergency_release_name }} ${{ github.event.inputs.weekly_release_name }} ${{ github.event.inputs.root_cause_pr }} ${{ github.event.inputs.jira_ticket }} ${{ github.event.inputs.reason_fix_critical }}'
+
   check-pr-information:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Print Variables
         run: |
           echo "PR: $PR"
