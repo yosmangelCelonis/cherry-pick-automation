@@ -60,11 +60,11 @@ jobs:
       - name: get the Pr information
         run: |
           echo ${{ inputs.branchPr }} PR ID
+          pwd
           prJson="$(gh pr view ${{ inputs.branchPr }} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels)" 
           echo 'PR_JSON='$prJson >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_JSON: ${{ steps.version.outputs.PR_JSON }}   
       - name: Print PR info
         run: |
           echo "PR_JSON: $PR_JSON"
