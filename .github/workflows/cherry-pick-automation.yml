@@ -39,10 +39,11 @@ jobs:
       uses: actions/checkout@v4
     - name: output
       run: echo ' ${{ github.event.inputs.emergency_release_name }} ${{ github.event.inputs.weekly_release_name }} ${{ github.event.inputs.root_cause_pr }} ${{ github.event.inputs.jira_ticket }} ${{ github.event.inputs.reason_fix_critical }}'
-  log-the-inputs:
+  check-pr-information:
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - name: Print Variables
+        run: |
           echo "PR: $PR"
           echo "TYPE: $TYPE"
           echo "RELEASE_NAME: $RELEASE_NAME"
@@ -56,9 +57,6 @@ jobs:
           ROOT_CAUSE_PR: ${{ inputs.rootCausePr }}
           JIRA_TICKET: ${{ inputs.jiraTicket }}
           REASON_FIX: ${{ inputs.reason4Fix }}
-  check-pr-information:
-    runs-on: ubuntu-latest
-    steps:
       - name: get the Pr information
         run: |
           echo ${{ inputs.branchPr }} PR ID
@@ -66,11 +64,10 @@ jobs:
           echo 'PR_JSON='$prJson >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_JSON: ${{ steps.version.outputs.PR_JSON }}          
-  log-the-inputs2:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
+          PR_JSON: ${{ steps.version.outputs.PR_JSON }}   
+      - name: Print PR info
+        run: |
           echo "PR_JSON: $PR_JSON"
           echo "REASON_FIX: $REASON_FIX"
+          
         
