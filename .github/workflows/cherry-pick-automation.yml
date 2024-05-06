@@ -73,6 +73,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Print Releases info
         run: |
-          echo "RELEASES: $RELEASES[0]"
+          echo "RELEASES: $RELEASES.[0]"
           
         
