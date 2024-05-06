@@ -65,5 +65,14 @@ jobs:
         run: |
           echo "PR_JSON: $PR_JSON"
           echo "REASON_FIX: $REASON_FIX"
+      - name: get Release information
+        run: |
+          releases="$(gh release list)" 
+          echo 'RELEASES='$releases >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Print Releases info
+        run: |
+          echo "RELEASES: $RELEASES"
           
         
