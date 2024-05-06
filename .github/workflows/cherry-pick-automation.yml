@@ -67,7 +67,7 @@ jobs:
           echo "REASON_FIX: $REASON_FIX"
       - name: get Release information
         run: |
-          releases="$(gh release list)" 
+          releases="$(gh release list --limit 1 --json name,tagName)" 
           echo 'RELEASES='$releases >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
