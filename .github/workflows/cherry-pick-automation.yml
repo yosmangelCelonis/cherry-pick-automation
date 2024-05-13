@@ -78,7 +78,7 @@ jobs:
         id: obtener_id_release
         run: |
           # Obtener la lista de ramas remotas que coinciden con el patrón '*release*'
-          branch_list=$(git branch -r")
+          branch_list=$(git branch -r)
           # Imprimir la lista de ramas para verificar
           echo "Lista de ramas remotas:"
           echo "$branch_list"
