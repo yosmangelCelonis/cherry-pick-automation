@@ -81,5 +81,7 @@ jobs:
           release_tag="1"
           release_id=$(echo $release_info | jq -r --arg release_tag "$release_tag" '.[] | select(.tagName == $release_tag and .publishedAt != null) | .publishedAt')
           echo "::set-output name=release_id::$release_id"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
         
