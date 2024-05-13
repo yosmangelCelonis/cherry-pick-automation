@@ -77,15 +77,10 @@ jobs:
       - name: Obtener ID de Release
         id: obtener_id_release
         run: |
-          echo "git branch -r --list '*release*' --format "%(refname:lstrip=3)""
-          if ! git branch -r --list '*release*' --format "%(refname:lstrip=3)" | grep ${{ inputs.releaseName }}; then
-           echo "Error: No se encontró ninguna rama que coincida con el patrón '*release*' y contenga la cadena ${{ inputs.releaseName }}."
-           exit 1
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Print Releases id
-        run: |
-          echo "RELEASEID: $RELEASEID"
+          # Obtener la lista de ramas remotas que coinciden con el patrón '*release*'
+          branch_list=$(git branch -r --list '*release*' --format "%(refname:lstrip=3)")
+          # Imprimir la lista de ramas para verificar
+          echo "Lista de ramas remotas:"
+          echo "$branch_list"
           
         
