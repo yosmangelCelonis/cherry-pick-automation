@@ -77,13 +77,14 @@ jobs:
       - name: Obtener ID de Release
         id: obtener_id_release
         run: |
-          release_info=$(gh release list --json tagName,publishedAt)
-          release_tag="1"
-          release_id=$(echo $release_info | jq -r --arg release_tag "$release_tag" '.[] | select(.tagName == $release_tag) | .id')
-          echo 'RELEASEID='$release_id >> $GITHUB_ENV
+         if ! git branch -r --list '*release*' --format "%(refname:lstrip=3)" | grep -q ${{ inputs.branchPr }}; then
+           echo "Error: No se encontró ninguna rama que coincida con el patrón '*release*' y contenga la cadena ${{ inputs.branchPr }}."
+           exit 1
+         fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Print Releases id
         run: |
           echo "RELEASEID: $RELEASEID"
+          
         
