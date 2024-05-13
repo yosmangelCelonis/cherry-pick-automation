@@ -74,5 +74,12 @@ jobs:
       - name: Print Releases info
         run: |
           echo "$RELEASES" | jq '.[0]'
+      - name: Obtener ID de Release
+        id: obtener_id_release
+        run: |
+          release_info=$(gh release list --json tagName,publishedAt)
+          release_tag="1"
+          release_id=$(echo $release_info | jq -r --arg release_tag "$release_tag" '.[] | select(.tagName == $release_tag and .publishedAt != null) | .publishedAt')
+          echo "::set-output name=release_id::$release_id"
           
         
