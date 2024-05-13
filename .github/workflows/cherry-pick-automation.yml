@@ -77,6 +77,8 @@ jobs:
       - name: Obtener ID de Release
         id: obtener_id_release
         run: |
+          git fetch --all
+          git branch -a
           # Obtener la lista de ramas remotas que coinciden con el patrón '*release*'
           branch_list=$(git branch --all --list)
           # Imprimir la lista de ramas para verificar
