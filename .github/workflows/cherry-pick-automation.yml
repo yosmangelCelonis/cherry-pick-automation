@@ -77,8 +77,8 @@ jobs:
       - name: Obtener ID de Release
         id: obtener_id_release
         run: |
-         if ! git branch -r --list '*release*' --format "%(refname:lstrip=3)" | grep -q ${{ inputs.branchPr }}; then
-           echo "Error: No se encontró ninguna rama que coincida con el patrón '*release*' y contenga la cadena ${{ inputs.branchPr }}."
+         if ! git branch -r --list '*release*' --format "%(refname:lstrip=3)" | grep -q ${{ inputs.releaseName }}; then
+           echo "Error: No se encontró ninguna rama que coincida con el patrón '*release*' y contenga la cadena ${{ inputs.releaseName }}."
            exit 1
          fi
         env:
