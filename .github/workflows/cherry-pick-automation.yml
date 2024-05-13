@@ -84,6 +84,20 @@ jobs:
           # Imprimir la lista de ramas para verificar
           echo "Lista de ramas remotas:"
           echo "$branch_list"
+          # Buscar la cadena 'foo' en cada rama de la lista
+          found=false
+          while IFS= read -r branch; do
+            if echo "$branch" | grep -q ${{ inputs.releaseName }}; then
+              echo "Se encontró la cadena ${{ inputs.releaseName }} en la rama: $branch"
+              found=true
+            fi
+          done <<< "$branch_list"
+          
+          # Verificar si se encontró la cadena 'foo' en alguna rama
+          if ! $found; then
+            echo "Error: No se encontró ninguna rama que contenga la cadena 'foo'."
+            exit 1
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
