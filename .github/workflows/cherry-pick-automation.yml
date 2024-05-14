@@ -53,18 +53,17 @@ jobs:
           ROOT_CAUSE_PR: ${{ inputs.rootCausePr }}
           JIRA_TICKET: ${{ inputs.jiraTicket }}
           REASON_FIX: ${{ inputs.reason4Fix }}
-      - name: get the Pr information
+      - name: get the Pr's information
         run: |
-          echo ${{ inputs.branchPr }} PR ID
-          pwd
           prJson="$(gh pr view ${{ inputs.branchPr }} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels)" 
+          rootCauseJson="$(gh pr view ${{ inputs.rootCausePr }} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels)" 
           echo 'PR_JSON='$prJson >> $GITHUB_ENV
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Print PR info
-        run: |
+          echo 'PROOT_CAUSE_JSON='$rootCauseJson >> $GITHUB_ENV
+          pwd
           echo "PR_JSON: $PR_JSON"
           echo "REASON_FIX: $REASON_FIX"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: get Release information
         run: |
           releases="$(gh release list --limit 1 --json name,tagName)" 
