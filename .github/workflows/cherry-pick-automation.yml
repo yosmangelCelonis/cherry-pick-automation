@@ -64,6 +64,33 @@ jobs:
           echo "REASON_FIX: $REASON_FIX"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify release
+        run: |
+          git fetch --all
+          # Obtain branches following the pattern '*release*'
+          branch_list=$(git branch -r --list '*release*' --format "%(refname:lstrip=3)")
+          echo "Branch List:"
+          echo "$branch_list"
+          # Find branch input name
+          found=false
+          while IFS= read -r branch; do
+            if echo "$branch" | grep -q ${{ inputs.releaseName }}; then
+              echo "Branch founded ${{ inputs.releaseName }}: $branch"
+              found=true
+            fi
+          done <<< "$branch_list"
+          
+          # Verify if branch was founded
+          if ! $found; then
+            echo "Branch doesn't exist"
+            exit 1
+          fi
+
+          if ${{ inputs.releaseType }} === 'Emergency'; then
+            echo "Emergency fix"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: get Release information
         run: |
           releases="$(gh release list --limit 1 --json name,tagName)" 
@@ -73,31 +100,5 @@ jobs:
       - name: Print Releases info
         run: |
           echo "$RELEASES" | jq '.[0]'
-      - name: Obtener ID de Release
-        id: obtener_id_release
-        run: |
-          git fetch --all
-          # git branch -a
-          # Obtener la lista de ramas remotas que coinciden con el patrón '*release*'
-          branch_list=$(git branch -r --list '*release*' --format "%(refname:lstrip=3)")
-          # Imprimir la lista de ramas para verificar
-          echo "Lista de ramas remotas:"
-          echo "$branch_list"
-          # Buscar la cadena 'foo' en cada rama de la lista
-          found=false
-          while IFS= read -r branch; do
-            if echo "$branch" | grep -q ${{ inputs.releaseName }}; then
-              echo "Se encontró la cadena ${{ inputs.releaseName }} en la rama: $branch"
-              found=true
-            fi
-          done <<< "$branch_list"
-          
-          # Verificar si se encontró la cadena 'foo' en alguna rama
-          if ! $found; then
-            echo "Error: No se encontró ninguna rama que contenga la cadena 'foo'."
-            exit 1
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
         
