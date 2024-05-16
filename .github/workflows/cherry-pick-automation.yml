@@ -85,7 +85,7 @@ jobs:
             echo "Branch doesn't exist"
             exit 1
           fi
-          if echo "$branch_list" | grep -q "^${{ inputs.releaseName }}$"; then
+          if echo "$branch_list" | grep -q "^release/${{ inputs.releaseName }}$"; then
             echo "La rama '${{ inputs.releaseName }}' existe."
           else
             echo "Error: La rama '${{ inputs.releaseName }}' no existe."
