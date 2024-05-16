@@ -91,7 +91,7 @@ jobs:
             echo "Error: La rama '${{ inputs.releaseName }}' no existe."
             exit 1
           fi
-          if [[ "${inputs.releaseType}" == *Emergency* ]]; then
+          if [[ "${{inputs.releaseType}}" == *Emergency* ]]; then
             echo "Emergency fix"
           fi
         env:
