@@ -85,8 +85,13 @@ jobs:
             echo "Branch doesn't exist"
             exit 1
           fi
-
-          if ${{ inputs.releaseType }} === 'Emergency'; then
+          if grep -q "^${inputs.releaseName}$" $branch_list; then
+            echo "La rama '${inputs.releaseName}' existe."
+          else
+            echo "Error: La rama '${inputs.releaseName}' no existe."
+            exit 1
+          fi
+          if [[ "${inputs.releaseType}" == *Emergency* ]]; then
             echo "Emergency fix"
           fi
         env:
