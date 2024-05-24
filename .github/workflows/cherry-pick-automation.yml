@@ -58,10 +58,10 @@ jobs:
           prJson="$(gh pr view ${{ inputs.branchPr }} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels)" 
           rootCauseJson="$(gh pr view ${{ inputs.rootCausePr }} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels)" 
           echo 'PR_JSON='$prJson >> $GITHUB_ENV
-          echo 'PROOT_CAUSE_JSON='$rootCauseJson >> $GITHUB_ENV
+          echo 'ROOT_CAUSE_JSON='$rootCauseJson >> $GITHUB_ENV
           pwd
           echo "PR_JSON: $PR_JSON"
-          echo "REASON_FIX: $REASON_FIX"
+          echo "REASON_FIX: $ROOT_CAUSE_JSON"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Verify release
