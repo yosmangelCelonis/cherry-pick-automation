@@ -55,8 +55,13 @@ jobs:
           REASON_FIX: ${{ inputs.reason4Fix }}
       - name: get the Pr's information
         run: |
-          prJson="$(gh pr view ${{ inputs.branchPr }} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels)" 
-          rootCauseJson="$(gh pr view ${{ inputs.rootCausePr }} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels)" 
+          # Funtion to handle error messages
+          handle_error() {
+            echo "Error: $1"
+            exit 1
+          }
+          prJson="$(gh pr view ${{ inputs.branchPr }} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels)" || handle_error "The PR to merge doesn't exist, please make sure that you are using the right PR id "
+          rootCauseJson="$(gh pr view ${{ inputs.rootCausePr }} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels)" || handle_error "The root cause PR doesn't exist, please make sure that you are using the right PR id "
           echo 'PR_JSON='$prJson >> $GITHUB_ENV
           echo 'ROOT_CAUSE_JSON='$rootCauseJson >> $GITHUB_ENV
           pwd
