@@ -84,10 +84,10 @@ jobs:
           root_mergeCommit=$(echo "$rootCauseJson" | jq -r '.mergeCommit')
           root_mergeable=$(echo "$rootCauseJson" | jq -r '.mergeable')
           
-          if [[ "$pr_mergedAt" == "null" ]] ; then
+          if [[ "$pr_mergedAt" = "null" ]] || [[ "$pr_mergeCommit" = "null" ]] || [[ "$pr_mergeable" = "UNKNOWN" ]] ; then
             handle_error "The PR to merge has not been merged to main, please make sure that you are using the right PR id"
           fi
-          if [[ "$root_mergedAt" == "null" ]] || [[ "$root_mergeCommit" == "null" ]] || [[ "$root_mergeable" == "UNKNOWN" ]]; then
+          if [[ "$root_mergedAt" = "null" ]] || [[ "$root_mergeCommit" = "null" ]] || [[ "$root_mergeable" = "UNKNOWN" ]]; then
             handle_error "The root cause pr has not been merged to main, please make sure that you are using the right PR id "
           fi
           if [[ "${{inputs.releaseType}}" == *Emergency* ]]; then
