@@ -77,7 +77,10 @@ jobs:
             handle_error "The branch doesn't exist, please make sure that you are using the correct name. Remember to only speficy the name of the branch, for example release/BRANCH-NAME**"
           fi
           
-          
+          if [ "$prJson.mergedAt" = "null" ] || [ "$prJson.mergeCommit" = "null" ] || [[ "$prJson.mergeable" !== *UNKNOWN* ]]; then
+            handle_error "The PR to merge has not been merged to main, please make sure that you are using the right PR id"
+          fi
+
           if [[ "${{inputs.releaseType}}" == *Emergency* ]]; then
             echo "Emergency fix"
           fi
