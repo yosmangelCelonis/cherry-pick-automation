@@ -76,10 +76,13 @@ jobs:
           else
             handle_error "The branch doesn't exist, please make sure that you are using the correct name. Remember to only speficy the name of the branch, for example release/BRANCH-NAME**"
           fi
+          echo $prJson
           pr_mergedAt=$(echo "$prJson" | jq -r '.mergedAt')
           pr_mergeCommit=$(echo "$prJson" | jq -r '.mergeCommit')
           pr_mergeable=$(echo "$prJson" | jq -r '.mergeable')
-
+          echo $pr_mergedAt
+          echo $pr_mergeCommit
+          echo $pr_mergeable
           root_mergedAt=$(echo "$rootCauseJson" | jq -r '.mergedAt')
           root_mergeCommit=$(echo "$rootCauseJson" | jq -r '.mergeCommit')
           root_mergeable=$(echo "$rootCauseJson" | jq -r '.mergeable')
