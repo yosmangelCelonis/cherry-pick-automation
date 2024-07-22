@@ -10,11 +10,14 @@ module.exports.cherryPick = async({branchPr, releaseType, releaseName, rootCause
     
 
     try {
-        const prJson = JSON.parse(execSync(`gh pr view ${branchPr} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels`).toString());
-        const rootCauseJson = JSON.parse(execSync(`gh pr view ${rootCausePr} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels`).toString());
+        const prJson = await JSON.parse( execSync(`gh pr view ${branchPr} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels`).toString());
+        const rootCauseJson = await JSON.parse(execSync(`gh pr view ${rootCausePr} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels`).toString());
 
         console.log('PR_JSON:', prJson.id);
         console.log('ROOT_CAUSE_JSON:', rootCauseJson.id);
+        if(prJson.id === rootCauseJson.id){
+            handleError('The PR and the root cause have to be different');
+        }
         if (prJson.mergedAt === null || prJson.mergeCommit === null || prJson.mergeable !== 'UNKNOWN') {
             handleError('The PR to merge has not been merged to main, please make sure that you are using the right PR id');
         }
