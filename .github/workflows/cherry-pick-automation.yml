@@ -38,6 +38,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Instalar gh y jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install gh jq -y
       - name: Run cherry pick script
         uses: actions/github-script@v7
         id: cherryPick
