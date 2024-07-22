@@ -52,5 +52,7 @@ jobs:
         with:
           result-encoding: string
           script: |
+            const {execSync} = require('child_process');
+            execSync('ls');
             const {cherryPick} = require('./tools/scripts/github/cherry-pick-creation.js');
             return true;
