@@ -32,29 +32,27 @@ on:
         type: string
         required: true
 jobs:
+
   check-pr-information:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '14'
-
       - name: Instalar gh y jq
         run: |
           sudo apt-get update
           sudo apt-get install gh jq -y
-
-      - name: Ejecutar script de cherry pick
-        env:
-          PR: ${{ inputs.branchPr }}
-          TYPE: ${{ inputs.releaseType }}
-          RELEASE_NAME: ${{ inputs.releaseName }}
-          ROOT_CAUSE_PR: ${{ inputs.rootCausePr }}
-          JIRA_TICKET: ${{ inputs.jiraTicket }}
-          REASON_FIX: ${{ inputs.reasonFix }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node tools/scripts/github/cherry-pick-creation.js ${{ inputs.branchPr }} ${{ inputs.releaseType }} ${{ inputs.releaseName }} ${{ inputs.rootCausePr }} ${{ inputs.jiraTicket }} ${{ inputs.reasonFix }}
+      - name: Run cherry pick script
+        uses: actions/github-script@v7
+        id: cherryPick
+        with:
+          result-encoding: string
+          script: |
+            const {execSync} = require('child_process');
+            execSync('ls');
+            const {cherryPick} = require('./tools/scripts/github/cherry-pick-creation.js');
+            return true;
