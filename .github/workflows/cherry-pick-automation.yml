@@ -27,7 +27,7 @@ on:
         description: 'Jira ticket'
         type: string
         required: true
-      reason4Fix:
+      reasonFix:
         description: 'Reason fix is critical'
         type: string
         required: true
@@ -38,73 +38,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Print Variables
-        run: |
-          echo "PR: $PR"
-          echo "TYPE: $TYPE"
-          echo "RELEASE_NAME: $RELEASE_NAME"
-          echo "ROOT_CAUSE_PR: $ROOT_CAUSE_PR"
-          echo "JIRA_TICKET: $JIRA_TICKET"
-          echo "REASON_FIX: $REASON_FIX"
-        env:
-          PR: ${{ inputs.branchPr }}
-          TYPE: ${{ inputs.releaseType }}
-          RELEASE_NAME: ${{ inputs.releaseName }}
-          ROOT_CAUSE_PR: ${{ inputs.rootCausePr }}
-          JIRA_TICKET: ${{ inputs.jiraTicket }}
-          REASON_FIX: ${{ inputs.reason4Fix }}
-      - name: Validate workflow inputs information
-        run: |
-          # Funtion to handle error messages
-          handle_error() {
-            echo "Error: $1"
-            exit 1
-          }
-          prJson="$(gh pr view ${{ inputs.branchPr }} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels)" || handle_error "The PR to merge doesn't exist, please make sure that you are using the right PR id "
-          rootCauseJson="$(gh pr view ${{ inputs.rootCausePr }} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels)" || handle_error "The root cause PR doesn't exist, please make sure that you are using the right PR id "
-          echo 'PR_JSON='$prJson >> $GITHUB_ENV
-          echo 'ROOT_CAUSE_JSON='$rootCauseJson >> $GITHUB_ENV
-          pwd
-          echo "PR_JSON: $PR_JSON"
-          echo "REASON_FIX: $ROOT_CAUSE_JSON"
-          git fetch --all
-          # Obtain branches following the pattern '*release*'
-          branch_list=$(git branch -r --list '*release*' --format "%(refname:lstrip=3)")
+      - name: Run cherry pick script
+        uses: actions/github-script@v7
+        id: cherryPick
+        with:
+          result-encoding: string
+          script: |
+            const {cherryPick} = require('./tools/scripts/github/cherry-pick-creation.js');
+            const result = await cherryPick(${{ inputs.branchPr }}, ${{ inputs.releaseType }}, ${{ inputs.releaseName }}, ${{ inputs.rootCausePr }}, ${{ inputs.jiraTicket }}, ${{ inputs.reasonFix }});
+            return result;
           
-          if echo "$branch_list" | grep -q "^release/${{ inputs.releaseName }}$"; then
-            echo "The branch 'release/${{ inputs.releaseName }}' exist."
-          else
-            handle_error "The branch doesn't exist, please make sure that you are using the correct name. Remember to only speficy the name of the branch, for example release/BRANCH-NAME**"
-          fi
-
-          pr_mergedAt=$(echo "$prJson" | jq -r '.mergedAt')
-          pr_mergeCommit=$(echo "$prJson" | jq -r '.mergeCommit')
-          pr_mergeable=$(echo "$prJson" | jq -r '.mergeable')
-
-          root_mergedAt=$(echo "$rootCauseJson" | jq -r '.mergedAt')
-          root_mergeCommit=$(echo "$rootCauseJson" | jq -r '.mergeCommit')
-          root_mergeable=$(echo "$rootCauseJson" | jq -r '.mergeable')
-          
-          if [[ "$pr_mergedAt" = "null" ]] || [[ "$pr_mergeCommit" = "null" ]] || [[ "$pr_mergeable" != "UNKNOWN" ]] ; then
-            handle_error "The PR to merge has not been merged to main, please make sure that you are using the right PR id"
-          fi
-          if [[ "$root_mergedAt" = "null" ]] || [[ "$root_mergeCommit" = "null" ]] || [[ "$root_mergeable" != "UNKNOWN" ]]; then
-            handle_error "The root cause pr has not been merged to main, please make sure that you are using the right PR id "
-          fi
-          if [[ "${{inputs.releaseType}}" == *Emergency* ]]; then
-            echo "Emergency fix"
-          fi
-         
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: get Release information
-        run: |
-          releases="$(gh release list --limit 1 --json name,tagName)" 
-          echo 'RELEASES='$releases >> $GITHUB_ENV
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Print Releases info
-        run: |
-          echo "$RELEASES" | jq '.[0]'
           
         

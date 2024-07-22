@@ -1,0 +1,14 @@
+{
+  "name": "cherry-pick-automation",
+  "version": "1.0.0",
+  "description": "test repo to create automation for cherry pick",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "@actions/cache": "^3.2.1",
+    "@actions/core": "^1.10.0"
+  }
+}
