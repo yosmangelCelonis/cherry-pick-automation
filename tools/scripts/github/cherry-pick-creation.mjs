@@ -6,7 +6,7 @@ const handleError = (message)=>{
     return false;
 };
 
-module.exports.cherryPick = async({branchPr, releaseType, releaseName, rootCausePr, jiraTicket, reasonFix}) =>{
+module.exports.cherryPick = async( branchPr, releaseType, releaseName, rootCausePr, jiraTicket, reasonFix) =>{
     
 
     try {
