@@ -4,6 +4,7 @@
   "description": "test repo to create automation for cherry pick",
   "author": "",
   "license": "ISC",
+  "type": "module",
   "dependencies": {
 
   },
