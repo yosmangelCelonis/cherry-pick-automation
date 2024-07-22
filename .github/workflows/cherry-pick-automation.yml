@@ -53,5 +53,4 @@ jobs:
           result-encoding: string
           script: |
             const {cherryPick} = require('./tools/scripts/github/cherry-pick-creation.js');
-            const result = await cherryPick(${{ inputs.branchPr }}, ${{ inputs.releaseType }}, ${{ inputs.releaseName }}, ${{ inputs.rootCausePr }}, ${{ inputs.jiraTicket }}, ${{ inputs.reasonFix }});
-            return result;
+            return true;
