@@ -1,21 +1,20 @@
-const {execSync} = require('child_process');
-const process = require('process');
-const handleError = (message)=>{
+import { execSync } from 'child_process';
+import process from 'process';
+
+const handleError = (message) => {
     console.error(`Error: ${message}`);
     process.exit(1);
-    return false;
 };
 
-module.exports.cherryPick = async( branchPr, releaseType, releaseName, rootCausePr, jiraTicket, reasonFix) =>{
-    
-
+export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr, jiraTicket, reasonFix) => {
     try {
-        const prJson = await JSON.parse( execSync(`gh pr view ${branchPr} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels`).toString());
-        const rootCauseJson = await JSON.parse(execSync(`gh pr view ${rootCausePr} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels`).toString());
+        const prJson = JSON.parse(execSync(`gh pr view ${branchPr} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels`).toString());
+        const rootCauseJson = JSON.parse(execSync(`gh pr view ${rootCausePr} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels`).toString());
 
         console.log('PR_JSON:', prJson.id);
         console.log('ROOT_CAUSE_JSON:', rootCauseJson.id);
-        if(prJson.id === rootCauseJson.id){
+
+        if (prJson.id === rootCauseJson.id) {
             handleError('The PR and the root cause have to be different');
         }
         if (prJson.mergedAt === null || prJson.mergeCommit === null || prJson.mergeable !== 'UNKNOWN') {
@@ -37,9 +36,11 @@ module.exports.cherryPick = async( branchPr, releaseType, releaseName, rootCause
             console.log('Emergency fix');
         }
 
-        return true
-    }catch (error) {
+        return true;
+    } catch (error) {
         handleError(error.message);
     }
-
-}
+};
+// Manejo de argumentos de entrada
+const [branchPr, releaseType, releaseName, rootCausePr, jiraTicket, reasonFix] = process.argv.slice(2);
+cherryPick(branchPr, releaseType, releaseName, rootCausePr, jiraTicket, reasonFix);
