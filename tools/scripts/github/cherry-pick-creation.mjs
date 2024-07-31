@@ -52,7 +52,7 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
         execSync(`git checkout -b ${newBranchName}`);
         execSync(`git cherry-pick -m 1 ${prJson.mergeCommit.oid}`);
 
-        console.log(`Cherry-picked commit ${mergeCommitSha} onto ${newBranchName}`);
+        console.log(`Cherry-picked commit ${prJson.mergeCommit.oid} onto ${newBranchName}`);
 
         // Push the new branch to remote
         execSync(`git push origin ${newBranchName}`);
