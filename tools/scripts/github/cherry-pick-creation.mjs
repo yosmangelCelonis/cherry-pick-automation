@@ -1,5 +1,6 @@
 import { execSync } from 'child_process';
 import process from 'process';
+import fs from 'fs';
 
 const handleError = (message) => {
     console.error(`Error: ${message}`);
