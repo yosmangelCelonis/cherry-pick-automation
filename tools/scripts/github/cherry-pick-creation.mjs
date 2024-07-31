@@ -26,7 +26,9 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
 
         execSync('git fetch --all');
         const branchList = execSync('git branch -r --list "*release*" --format "%(refname:lstrip=3)"').toString();
-
+        console.log('branchList:' , branchList);
+        console.log('branchList.includes(`release/${releaseName}`):' , branchList.includes(`release/${releaseName}`));
+        console.log('releaseName:' , releaseName);
         if (!branchList.includes(`release/${releaseName}`)) {
             handleError("The branch doesn't exist, please make sure that you are using the correct name. Remember to only specify the name of the branch, for example release/BRANCH-NAME**");
         }
