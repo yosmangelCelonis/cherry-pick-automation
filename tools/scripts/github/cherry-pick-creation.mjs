@@ -8,6 +8,12 @@ const handleError = (message) => {
 
 export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr, jiraTicket, reasonFix) => {
     try {
+        console.log('branchPr', branchPr);
+        console.log('releaseType', releaseType);
+        console.log('releaseName', releaseName);
+        console.log('rootCausePr', rootCausePr);
+        console.log('jiraTicket,', jiraTicket);
+        console.log('reasonFix', reasonFix);
         const prJson = JSON.parse(execSync(`gh pr view ${branchPr} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels`).toString());
         const rootCauseJson = JSON.parse(execSync(`gh pr view ${rootCausePr} --json author,mergeCommit,mergeable,mergedAt,number,title,url,id,labels`).toString());
 
