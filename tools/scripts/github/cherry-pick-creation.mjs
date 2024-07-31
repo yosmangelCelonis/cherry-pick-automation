@@ -5,7 +5,13 @@ const handleError = (message) => {
     console.error(`Error: ${message}`);
     process.exit(1);
 };
-
+const replacePlaceholders = (template, replacements) => {
+    let result = template;
+    for (const [key, value] of Object.entries(replacements)) {
+        result = result.replace(new RegExp(`\\$\\{\\{ ${key} \\}\\}`, 'g'), value);
+    }
+    return result;
+};
 export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr, jiraTicket, reasonFix) => {
     try {
         console.log('branchPr', branchPr);
@@ -44,7 +50,7 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
         execSync(`git checkout release/${releaseName}`);
         const newBranchName = `hotfix/${prJson.author.login}/cherry-pick-automation-${Date.now()}-${prJson.id}`;
         execSync(`git checkout -b ${newBranchName}`);
-        execSync(`git cherry-pick ${prJson.mergeCommit.oid}`);
+        execSync(`git cherry-pick -m 1 ${prJson.mergeCommit.oid}`);
 
         console.log(`Cherry-picked commit ${mergeCommitSha} onto ${newBranchName}`);
 
