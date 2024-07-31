@@ -49,12 +49,4 @@ jobs:
           sudo apt-get install gh jq -y
 
       - name: Ejecutar script de cherry pick
-        env:
-          PR: ${{ inputs.branchPr }}
-          TYPE: ${{ inputs.releaseType }}
-          RELEASE_NAME: ${{ inputs.releaseName }}
-          ROOT_CAUSE_PR: ${{ inputs.rootCausePr }}
-          JIRA_TICKET: ${{ inputs.jiraTicket }}
-          REASON_FIX: ${{ inputs.reasonFix }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node tools/scripts/github/cherry-pick-creation.mjs ${{ inputs.branchPr }} ${{ inputs.releaseType }} ${{ inputs.releaseName }} ${{ inputs.rootCausePr }} ${{ inputs.jiraTicket }} ${{ inputs.reasonFix }}
+        run: node tools/scripts/github/cherry-pick-creation.mjs "${{ inputs.branchPr }}" "${{ inputs.releaseType }}" "${{ inputs.releaseName }}" "${{ inputs.rootCausePr }}" "${{ inputs.jiraTicket }}" "${{ inputs.reasonFix }}"
