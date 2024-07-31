@@ -48,6 +48,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install gh jq -y
 
+      - name: git Config
+        run: |
+          git config --global user.email "y.adamespinero@celonis.com"
+          git config --global user.name "Yos"
+
       - name: Ejecutar script de cherry pick
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
