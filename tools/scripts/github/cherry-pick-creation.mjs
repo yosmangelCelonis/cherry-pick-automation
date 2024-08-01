@@ -57,7 +57,7 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
 
         // Push the new branch to remote
         execSync(`git push origin ${newBranchName}`);
-        const template = fs.readFileSync('CHERRY_PICK_PULL_REQUEST.md', 'utf8');
+        const template = fs.readFileSync('.github/CHERRY_PICK_PULL_REQUEST.md', 'utf8');
         const replacements = {
             'inputs.branchPr': branchPr,
             'inputs.releaseType': releaseType,
