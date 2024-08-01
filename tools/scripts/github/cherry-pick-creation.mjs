@@ -58,6 +58,7 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
         // Push the new branch to remote
         execSync(`git push origin ${newBranchName}`);
         const template = fs.readFileSync('.github/CHERRY_PICK_PULL_REQUEST.md', 'utf8');
+        console.log(`READ THE FILE`);
         const replacements = {
             'inputs.branchPr': branchPr,
             'inputs.releaseType': releaseType,
@@ -67,14 +68,15 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
             'inputs.reasonFix': reasonFix
         };
         const prBody = replacePlaceholders(template, replacements);
+        console.log(`REPLACE THE ELEMENTS`);
         // Write the updated markdown to a temp file
         const tempFilePath = '/tmp/CHERRY_PICK_PULL_REQUEST.md';
+        console.log(`TEMP FILE`);
         fs.writeFileSync(tempFilePath, prBody);
-
+        console.log(`REWRITE FILE`);
         // Create a new PR
         const prTitle = `Cherry-pick PR ${branchPr} into release/${releaseName}`;
         const newPrJson = JSON.parse(execSync(`gh pr create -B release/${releaseName} -H ${newBranchName} -t "${prTitle}" -F ${tempFilePath} --json number,url`).toString());
-
         console.log(`Created new PR #${newPrJson.number}: ${newPrJson.url}`);
 
         // Verify release type
