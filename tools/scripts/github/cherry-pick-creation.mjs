@@ -1,6 +1,7 @@
 import { execSync } from 'child_process';
 import process from 'process';
 import fs from 'fs';
+import path from 'path';
 
 const handleError = (message) => {
     console.error(`Error: ${message}`);
@@ -57,7 +58,9 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
 
         // Push the new branch to remote
         execSync(`git push origin ${newBranchName}`);
-        const template = fs.readFileSync('../../../.github/CHERRY_PICK_PULL_REQUEST.md', 'utf8');
+        // Read the PR template
+        const templatePath = path.resolve('.github/CHERRY_PICK_PULL_REQUEST.md');
+        const template = fs.readFileSync(templatePath, 'utf8');
         console.log(`READ THE FILE`);
         const replacements = {
             'inputs.branchPr': branchPr,
