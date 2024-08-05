@@ -64,6 +64,7 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
         // List the current directory and .github directory contents for debugging
         console.log('Current directory contents:', fs.readdirSync('.'));
         console.log('.github directory contents:', fs.readdirSync('.github'));
+        console.log('.git directory contents:', fs.readdirSync('.git'));
         const template = fs.readFileSync(templatePath, 'utf8');
         console.log(`READ THE FILE`);
         const replacements = {
