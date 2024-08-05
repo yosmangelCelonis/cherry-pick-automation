@@ -57,9 +57,13 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
         console.log(`Cherry-picked commit ${prJson.mergeCommit.oid} onto ${newBranchName}`);
 
         // Push the new branch to remote
-        execSync(`git push origin ${newBranchName}`);
+        //execSync(`git push origin ${newBranchName}`);
         // Read the PR template
         const templatePath = path.resolve('.github/CHERRY_PICK_PULL_REQUEST.md');
+        console.log(`Template path: ${templatePath}`);
+        // List the current directory and .github directory contents for debugging
+        console.log('Current directory contents:', fs.readdirSync('.'));
+        console.log('.github directory contents:', fs.readdirSync('.github'));
         const template = fs.readFileSync(templatePath, 'utf8');
         console.log(`READ THE FILE`);
         const replacements = {
