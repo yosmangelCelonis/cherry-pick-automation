@@ -59,7 +59,8 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
         // Push the new branch to remote
         //execSync(`git push origin ${newBranchName}`);
         // Read the PR template
-        const templatePath = path.resolve('.github/CHERRY_PICK_PULL_REQUEST.md');
+        // Resolve the correct path of the PR template
+        const templatePath = path.resolve(process.cwd(), '.github', 'CHERRY_PICK_PULL_REQUEST.md');
         console.log(`Template path: ${templatePath}`);
         // List the current directory and .github directory contents for debugging
         console.log('Current directory contents:', fs.readdirSync('.'));
