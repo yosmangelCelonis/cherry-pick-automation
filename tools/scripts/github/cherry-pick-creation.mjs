@@ -87,7 +87,7 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
 
         console.log(`Cherry-picked commit ${prJson.mergeCommit.oid} onto ${newBranchName}`);
 
-        const newPrJson = JSON.parse(execSync(`gh pr create -B release/${releaseName} -H ${newBranchName} -t "${prTitle}" -F ${tempFilePath} --json number,url`).toString());
+        const newPrJson = JSON.parse(execSync(`gh pr create -B release/${releaseName} -H ${newBranchName} -t "${prTitle}" -b "${template}"`).toString());
         console.log(`Created new PR #${newPrJson.number}: ${newPrJson.url}`);
 
         // Verify release type
