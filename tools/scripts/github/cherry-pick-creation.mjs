@@ -48,14 +48,6 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
             console.log('Emergency fix');
         }
 
-        // Checkout the release branch
-        execSync(`git checkout release/${releaseName}`);
-        const newBranchName = `hotfix/${prJson.author.login}/cherry-pick-automation-${Date.now()}-${prJson.id}`;
-        execSync(`git checkout -b ${newBranchName}`);
-        execSync(`git cherry-pick -m 1 ${prJson.mergeCommit.oid}`);
-
-        console.log(`Cherry-picked commit ${prJson.mergeCommit.oid} onto ${newBranchName}`);
-
         // Push the new branch to remote
         //execSync(`git push origin ${newBranchName}`);
         // Read the PR template
@@ -65,6 +57,7 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
         // List the current directory and .github directory contents for debugging
         console.log('Current directory contents:', fs.readdirSync('.'));
         console.log('.github directory contents:', fs.readdirSync('.github'));
+        console.log('.github directory contents:', fs.readdirSync('.github/workflows'));
         console.log('.git directory contents:', fs.readdirSync('.git'));
         const template = fs.readFileSync(templatePath, 'utf8');
         console.log(`READ THE FILE`);
@@ -85,6 +78,15 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
         console.log(`REWRITE FILE`);
         // Create a new PR
         const prTitle = `Cherry-pick PR ${branchPr} into release/${releaseName}`;
+
+        // Checkout the release branch
+        execSync(`git checkout release/${releaseName}`);
+        const newBranchName = `hotfix/${prJson.author.login}/cherry-pick-automation-${Date.now()}-${prJson.id}`;
+        execSync(`git checkout -b ${newBranchName}`);
+        execSync(`git cherry-pick -m 1 ${prJson.mergeCommit.oid}`);
+
+        console.log(`Cherry-picked commit ${prJson.mergeCommit.oid} onto ${newBranchName}`);
+
         const newPrJson = JSON.parse(execSync(`gh pr create -B release/${releaseName} -H ${newBranchName} -t "${prTitle}" -F ${tempFilePath} --json number,url`).toString());
         console.log(`Created new PR #${newPrJson.number}: ${newPrJson.url}`);
 
