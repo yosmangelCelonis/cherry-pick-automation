@@ -77,9 +77,17 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
 
         // Create a new PR
         const prTitle = `Cherry-pick PR ${branchPr} into release/${releaseName}`;
-        const newPrJson = JSON.parse(execSync(`gh pr create -B release/${releaseName} -H ${newBranchName} -t "${prTitle}" -F ${tempFilePath} --json number,url`).toString());
+        const prOutput = execSync(`gh pr create -B release/${releaseName} -H ${newBranchName} -t "${prTitle}" -F ${tempFilePath}`).toString();
+        // Extract the URL of the PR from the output
+        const prUrlMatch = prOutput.match(/https:\/\/github\.com\/[^\s]+/);
+        const prUrl = prUrlMatch ? prUrlMatch[0] : null;
 
-        console.log(`Created new PR #${newPrJson.number}: ${newPrJson.url}`);
+        if (prUrl) {
+            console.log(`Created new PR: ${prUrl}`);
+        } else {
+            handleError('Failed to extract the PR URL from the output.');
+        }
+        
         return true;
     } catch (error) {
         handleError(error.message);
