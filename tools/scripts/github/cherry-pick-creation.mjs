@@ -48,19 +48,9 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
             console.log('Emergency fix');
         }
 
-        // Push the new branch to remote
-        //execSync(`git push origin ${newBranchName}`);
-        // Read the PR template
-        // Resolve the correct path of the PR template
+
         const templatePath = path.resolve(process.cwd(), '.github', 'CHERRY_PICK_PULL_REQUEST.md');
-        console.log(`Template path: ${templatePath}`);
-        // List the current directory and .github directory contents for debugging
-        console.log('Current directory contents:', fs.readdirSync('.'));
-        console.log('.github directory contents:', fs.readdirSync('.github'));
-        console.log('.github directory contents:', fs.readdirSync('.github/workflows'));
-        console.log('.git directory contents:', fs.readdirSync('.git'));
         const template = fs.readFileSync(templatePath, 'utf8');
-        console.log(`READ THE FILE`);
         const replacements = {
             'inputs.branchPr': branchPr,
             'inputs.releaseType': releaseType,
@@ -70,14 +60,9 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
             'inputs.reasonFix': reasonFix
         };
         const prBody = replacePlaceholders(template, replacements);
-        console.log(`REPLACE THE ELEMENTS`);
         // Write the updated markdown to a temp file
         const tempFilePath = '/tmp/CHERRY_PICK_PULL_REQUEST.md';
-        console.log(`TEMP FILE`);
         fs.writeFileSync(tempFilePath, prBody);
-        console.log(`REWRITE FILE`);
-        // Create a new PR
-        const prTitle = `Cherry-pick PR ${branchPr} into release/${releaseName}`;
 
         // Checkout the release branch
         execSync(`git checkout release/${releaseName}`);
@@ -86,11 +71,15 @@ export const cherryPick = async (branchPr, releaseType, releaseName, rootCausePr
         execSync(`git cherry-pick -m 1 ${prJson.mergeCommit.oid}`);
 
         console.log(`Cherry-picked commit ${prJson.mergeCommit.oid} onto ${newBranchName}`);
+        // Push the new branch to remote
+        execSync(`git push origin ${newBranchName}`);
 
-        const newPrJson = JSON.parse(execSync(`gh pr create -B release/${releaseName} -H ${newBranchName} -t "${prTitle}" -b "${template}"`).toString());
+
+        // Create a new PR
+        const prTitle = `Cherry-pick PR ${branchPr} into release/${releaseName}`;
+        const newPrJson = JSON.parse(execSync(`gh pr create -B release/${releaseName} -H ${newBranchName} -t "${prTitle}" -F ${tempFilePath} --json number,url`).toString());
+
         console.log(`Created new PR #${newPrJson.number}: ${newPrJson.url}`);
-
-        // Verify release type
         return true;
     } catch (error) {
         handleError(error.message);
